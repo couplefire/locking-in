@@ -22,7 +22,10 @@ DEFAULT_CONFIG = {
         "openai.com"
     ],
     # When in grind mode, "until" holds an ISO timestamp indicating when grind mode ends
-    "until": None
+    # If until is None, grind mode is indefinite
+    "until": None,
+    # Track if grind was client-initiated (cannot be turned off by client)
+    "client_initiated": False
 }
 
 
@@ -62,6 +65,7 @@ def config():
             if datetime.utcnow() >= datetime.fromisoformat(cfg["until"]):
                 cfg["mode"] = "chill"
                 cfg["until"] = None
+                cfg["client_initiated"] = False
                 save_config(cfg)
         except ValueError:
             # invalid timestamp; reset
@@ -88,12 +92,46 @@ def config():
         if data["mode"] == "grind":
             # Determine duration
             hours = int(data.get("grind_hours", 0))
-            if hours <= 0:
-                abort(400, "grind_hours must be >0 when enabling grind mode")
-            cfg["until"] = (datetime.utcnow() + timedelta(hours=hours)).isoformat()
+            if hours > 0:
+                cfg["until"] = (datetime.utcnow() + timedelta(hours=hours)).isoformat()
+            else:
+                # hours <= 0 means indefinite grind mode
+                cfg["until"] = None
+            cfg["client_initiated"] = False  # Admin can always override
         else:
             cfg["until"] = None
+            cfg["client_initiated"] = False
 
+    save_config(cfg)
+    return jsonify(cfg), 200
+
+
+@app.route("/client-grind", methods=["POST"])
+def client_grind():
+    """
+    Allow clients to enable grind mode during chill mode.
+    Clients cannot disable grind mode once enabled.
+    """
+    cfg = load_config()
+    
+    # Only allow if currently in chill mode
+    if cfg["mode"] != "chill":
+        abort(400, "Can only enable grind mode when currently in chill mode")
+    
+    data = request.get_json(force=True)
+    
+    # Client is enabling grind mode
+    cfg["mode"] = "grind"
+    cfg["client_initiated"] = True
+    
+    # Handle duration
+    hours = int(data.get("grind_hours", 0))
+    if hours > 0:
+        cfg["until"] = (datetime.utcnow() + timedelta(hours=hours)).isoformat()
+    else:
+        # hours <= 0 means indefinite grind mode
+        cfg["until"] = None
+    
     save_config(cfg)
     return jsonify(cfg), 200
 

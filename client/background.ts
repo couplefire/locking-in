@@ -99,7 +99,8 @@ async function fetchConfig() {
     const data = await res.json()
     const mode = data.mode as "chill" | "grind"
     const whitelist = data.whitelist as string[]
-    console.log("Received config - mode:", mode, "whitelist:", whitelist)
+    const clientInitiated = data.client_initiated as boolean | undefined
+    console.log("Received config - mode:", mode, "whitelist:", whitelist, "client_initiated:", clientInitiated)
     
     if (mode !== currentMode || JSON.stringify(whitelist) !== JSON.stringify(currentWhitelist)) {
       console.log("Config changed, updating rules...")

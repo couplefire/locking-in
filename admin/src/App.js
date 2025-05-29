@@ -80,12 +80,14 @@ function App() {
     <div className="App">
       <h2>Current Mode: {cfg.mode.toUpperCase()}</h2>
       {cfg.mode === 'grind' && cfg.until && <p>Until: {new Date(cfg.until).toLocaleString()}</p>}
+      {cfg.mode === 'grind' && !cfg.until && <p>Mode: Indefinite (no time limit)</p>}
+      {cfg.client_initiated && <p>⚠️ Client-initiated grind mode</p>}
 
       <section>
         <h3>Change Mode</h3>
         <button onClick={() => updateCfg({ mode: 'chill' })}>Switch to Chill</button>
         <div>
-          <input type="number" min="1" value={grindHours} onChange={(e) => setGrindHours(e.target.value)} /> Hours
+          <input type="number" min="0" value={grindHours} onChange={(e) => setGrindHours(e.target.value)} /> Hours (0 for indefinite)
           <button onClick={() => updateCfg({ mode: 'grind', grind_hours: grindHours })}>
             Activate Grind
           </button>
