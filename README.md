@@ -2,7 +2,21 @@
 
 A browser extension that helps you stay focused by blocking distracting websites during "grind mode" and allowing free browsing during "chill mode".
 
-## New Features
+## ✨ Recent Updates
+
+### Modern UI Redesign
+- **Admin Panel**: Clean, card-based layout with modern typography and visual hierarchy
+- **Client Extension**: Minimalistic popup with gradient header and improved user experience
+- **Design System**: Consistent color scheme, spacing, and interactive elements
+- **Responsive**: Works well on different screen sizes
+
+### Enhanced Functionality
+- **Indefinite Grind Mode**: Admins can enable grind mode indefinitely by setting 0 hours
+- **Client-Initiated Grind Mode**: Users can lock themselves into grind mode (cannot disable)
+- **Visual Indicators**: Clear status displays with emojis and color coding
+- **Improved Warnings**: Better UX for understanding the implications of actions
+
+## Features
 
 ### 1. Indefinite Grind Mode
 - Admins can now enable grind mode indefinitely by setting 0 hours
@@ -27,14 +41,14 @@ A browser extension that helps you stay focused by blocking distracting websites
    - New endpoint `/client-grind` for client-initiated grind mode
 
 2. **Client Extension** (`/client`)
-   - Browser extension built with Plasmo
-   - Shows current mode and allows clients to enable grind mode
+   - Modern browser extension built with Plasmo
+   - Sleek popup interface with status display and controls
    - Uses Chrome's declarativeNetRequest API for efficient blocking
 
 3. **Admin Panel** (`/admin`)
-   - React-based admin interface
+   - Modern React-based admin interface with card layout
    - Full control over modes and whitelist
-   - Can override any mode settings
+   - Visual status indicators and responsive design
 
 ## Setup
 
@@ -66,7 +80,7 @@ npm start
 
 - `GET /config` - Get current configuration
 - `POST /config` - Update configuration (admin only)
-- `POST /client-grind` - Enable grind mode as client (new!)
+- `POST /client-grind` - Enable grind mode as client
 
 ## Configuration Structure
 
@@ -79,12 +93,19 @@ npm start
 }
 ```
 
-## Testing
+## UI Design
 
-Run the test script to verify the new functionality:
-```bash
-python test_grind_mode.py
-```
+### Design Principles
+- **Minimalistic**: Clean, uncluttered interfaces
+- **Modern**: Contemporary design with subtle shadows and gradients
+- **Intuitive**: Clear visual hierarchy and meaningful icons
+- **Responsive**: Adaptive layouts for different screen sizes
+
+### Color Scheme
+- **Chill Mode**: Green tones (`#059669`) for relaxed state
+- **Grind Mode**: Red tones (`#dc2626`) for focused state
+- **Neutral**: Gray tones for secondary elements
+- **Accents**: Blue (`#3b82f6`) for primary actions
 
 ## Security Notes
 

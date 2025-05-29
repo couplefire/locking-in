@@ -66,42 +66,105 @@ function App() {
   if (!password || !cfg) {
     return (
       <div className="App">
-        <h2>Admin Login</h2>
-        <form onSubmit={handleLogin}>
-          <input type="password" value={enteredPw} onChange={(e) => setEnteredPw(e.target.value)} placeholder="Password" />
-          <button type="submit">Login</button>
-        </form>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        <div className="login-container">
+          <h2>🔒 Admin Access</h2>
+          <form className="login-form" onSubmit={handleLogin}>
+            <input 
+              type="password" 
+              value={enteredPw} 
+              onChange={(e) => setEnteredPw(e.target.value)} 
+              placeholder="Enter admin password" 
+              required
+            />
+            <button type="submit" className="btn btn-full">Sign In</button>
+          </form>
+          {error && <div className="error">{error}</div>}
+        </div>
       </div>
     )
   }
 
   return (
     <div className="App">
-      <h2>Current Mode: {cfg.mode.toUpperCase()}</h2>
-      {cfg.mode === 'grind' && cfg.until && <p>Until: {new Date(cfg.until).toLocaleString()}</p>}
-      {cfg.mode === 'grind' && !cfg.until && <p>Mode: Indefinite (no time limit)</p>}
-      {cfg.client_initiated && <p>⚠️ Client-initiated grind mode</p>}
+      <h1>🎯 Productivity Control Panel</h1>
+      
+      {/* Status Card */}
+      <div className="status-card">
+        <div className={`mode-display ${cfg.mode === 'chill' ? 'mode-chill' : 'mode-grind'}`}>
+          Current Mode: {cfg.mode.toUpperCase()}
+        </div>
+        
+        {cfg.mode === 'grind' && cfg.until && (
+          <div className="status-info">
+            ⏰ Active until: {new Date(cfg.until).toLocaleString()}
+          </div>
+        )}
+        
+        {cfg.mode === 'grind' && !cfg.until && (
+          <div className="status-info">
+            ♾️ Indefinite mode (no time limit)
+          </div>
+        )}
+        
+        {cfg.client_initiated && (
+          <div className="client-warning">
+            ⚠️ Client-initiated grind mode - user cannot disable this themselves
+          </div>
+        )}
+      </div>
 
-      <section>
-        <h3>Change Mode</h3>
-        <button onClick={() => updateCfg({ mode: 'chill' })}>Switch to Chill</button>
-        <div>
-          <input type="number" min="0" value={grindHours} onChange={(e) => setGrindHours(e.target.value)} /> Hours (0 for indefinite)
-          <button onClick={() => updateCfg({ mode: 'grind', grind_hours: grindHours })}>
-            Activate Grind
+      {/* Mode Control */}
+      <div className="section">
+        <h3>⚡ Mode Control</h3>
+        <div className="control-group">
+          <button 
+            className="btn btn-secondary" 
+            onClick={() => updateCfg({ mode: 'chill' })}
+          >
+            Switch to Chill
           </button>
         </div>
-      </section>
+        
+        <div className="control-group">
+          <input 
+            type="number" 
+            min="0" 
+            value={grindHours} 
+            onChange={(e) => setGrindHours(e.target.value)} 
+          />
+          <span className="label">hours</span>
+          <button 
+            className="btn btn-danger" 
+            onClick={() => updateCfg({ mode: 'grind', grind_hours: grindHours })}
+          >
+            Activate Grind Mode
+          </button>
+        </div>
+        <div className="helper-text">
+          💡 Set 0 hours for indefinite grind mode
+        </div>
+      </div>
 
-      <section>
-        <h3>Edit Whitelist (one domain per line)</h3>
-        <textarea value={whitelistText} onChange={(e) => setWhitelistText(e.target.value)} rows={10} cols={50} />
-        <br />
-        <button onClick={() => updateCfg({ whitelist: whitelistText.split(/\n+/).map((d) => d.trim()).filter(Boolean) })}>
-          Save Whitelist
-        </button>
-      </section>
+      {/* Whitelist Control */}
+      <div className="section">
+        <h3>🌐 Allowed Websites</h3>
+        <p className="helper-text">Enter one domain per line (e.g., example.com)</p>
+        <textarea 
+          value={whitelistText} 
+          onChange={(e) => setWhitelistText(e.target.value)} 
+          placeholder="example.com&#10;github.com&#10;stackoverflow.com"
+        />
+        <div className="control-group">
+          <button 
+            className="btn" 
+            onClick={() => updateCfg({ 
+              whitelist: whitelistText.split(/\n+/).map((d) => d.trim()).filter(Boolean) 
+            })}
+          >
+            Save Whitelist
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
