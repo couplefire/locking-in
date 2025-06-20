@@ -2,7 +2,7 @@
 import type { PlasmoMessaging } from "@plasmohq/messaging"
 
 // Constants
-const API_BASE = "http://localhost:5005"
+const API_BASE = "http://3.128.88.225:5005"
 const CONFIG_ENDPOINT = `${API_BASE}/config`
 
 // Store current config in memory to detect changes

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import browser from "webextension-polyfill"
 
-const API_BASE = "http://localhost:5005"
+const API_BASE = "http://3.128.88.225:5005"
 
 // Modern styles
 const styles = {
