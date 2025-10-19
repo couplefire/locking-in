@@ -21,6 +21,7 @@ DEFAULT_CONFIG = {
         "example.com",
         "openai.com"
     ],
+    "blacklist": [],  # Domains to block even if they match whitelist patterns
     # When in grind mode, "until" holds an ISO timestamp indicating when grind mode ends
     # If until is None, grind mode is indefinite
     "until": None,
@@ -34,7 +35,11 @@ def load_config():
         return DEFAULT_CONFIG.copy()
     with open(CONFIG_PATH, "r") as f:
         try:
-            return json.load(f)
+            cfg = json.load(f)
+            # Ensure blacklist exists (for backward compatibility)
+            if "blacklist" not in cfg:
+                cfg["blacklist"] = []
+            return cfg
         except json.JSONDecodeError:
             return DEFAULT_CONFIG.copy()
 
@@ -79,11 +84,16 @@ def config():
     require_auth()
     data = request.get_json(force=True)
 
-    # Allowed fields: whitelist (list[str]), mode (str), grind_hours (int)
+    # Allowed fields: whitelist (list[str]), blacklist (list[str]), mode (str), grind_hours (int)
     if "whitelist" in data:
         if not isinstance(data["whitelist"], list):
             abort(400, "whitelist must be list of domains")
         cfg["whitelist"] = data["whitelist"]
+
+    if "blacklist" in data:
+        if not isinstance(data["blacklist"], list):
+            abort(400, "blacklist must be list of domains")
+        cfg["blacklist"] = data["blacklist"]
 
     if "mode" in data:
         if data["mode"] not in ("chill", "grind"):

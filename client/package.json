@@ -31,7 +31,8 @@
       "http://*/*"
     ],
     "permissions": [
-      "declarativeNetRequest"
+      "declarativeNetRequest",
+      "tabs"
     ],
     "action": {
       "default_popup": "popup.html"

@@ -10,6 +10,7 @@ function App() {
   const [error, setError] = useState('')
   const [grindHours, setGrindHours] = useState(1)
   const [whitelistText, setWhitelistText] = useState('')
+  const [blacklistText, setBlacklistText] = useState('')
 
   const headers = password ? { Authorization: `Bearer ${password}`, 'Content-Type': 'application/json' } : {}
 
@@ -28,6 +29,7 @@ function App() {
       const data = await res.json()
       setCfg(data)
       setWhitelistText(data.whitelist.join('\n'))
+      setBlacklistText((data.blacklist || []).join('\n'))
     } catch (e) {
       setCfg(null)
       setError(e.message)
@@ -162,6 +164,30 @@ function App() {
             })}
           >
             Save Whitelist
+          </button>
+        </div>
+      </div>
+
+      {/* Blacklist Control */}
+      <div className="section">
+        <h3>🚫 Blocked Websites (Priority Override)</h3>
+        <p className="helper-text">
+          These domains will be blocked even if they match whitelist patterns.<br />
+          Example: Block mail.google.com while allowing google.com
+        </p>
+        <textarea 
+          value={blacklistText} 
+          onChange={(e) => setBlacklistText(e.target.value)} 
+          placeholder="mail.google.com&#10;youtube.com&#10;reddit.com"
+        />
+        <div className="control-group">
+          <button 
+            className="btn" 
+            onClick={() => updateCfg({ 
+              blacklist: blacklistText.split(/\n+/).map((d) => d.trim()).filter(Boolean) 
+            })}
+          >
+            Save Blacklist
           </button>
         </div>
       </div>

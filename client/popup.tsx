@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
 import browser from "webextension-polyfill"
 
-const API_BASE = "http://3.128.88.225:5005"
+// const API_BASE = "http://3.128.88.225:5005"
+const API_BASE = "http://localhost:5005"
 
 // Modern styles
 const styles = {
@@ -143,7 +144,7 @@ const styles = {
 }
 
 function IndexPopup() {
-  const [cfg, setCfg] = useState<{ mode: string; until?: string; whitelist: string[]; client_initiated?: boolean } | null>(null)
+  const [cfg, setCfg] = useState<{ mode: string; until?: string; whitelist: string[]; blacklist?: string[]; client_initiated?: boolean } | null>(null)
   const [grindHours, setGrindHours] = useState(1)
 
   const fetchCfg = async () => {
@@ -232,6 +233,23 @@ function IndexPopup() {
             </div>
           )}
         </div>
+
+        {/* Show blacklist if present */}
+        {cfg.blacklist && cfg.blacklist.length > 0 && (
+          <div style={{
+            ...styles.statusCard,
+            background: '#fef2f2',
+            borderColor: '#fecaca',
+            marginTop: '16px'
+          }}>
+            <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '8px', color: '#dc2626' }}>
+              🚫 Priority Blocked Sites
+            </div>
+            <div style={{ fontSize: '12px', color: '#7f1d1d' }}>
+              {cfg.blacklist.join(', ')}
+            </div>
+          </div>
+        )}
 
         {/* Grind Mode Controls (only show in chill mode) */}
         {cfg.mode === "chill" && (
